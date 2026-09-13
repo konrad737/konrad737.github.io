@@ -1,0 +1,301 @@
+/* ---------------------------------------------------------
+   Tokens
+--------------------------------------------------------- */
+:root{
+  --paper:      #EFEEE7;
+  --paper-2:    #E7E5DB;
+  --ink:        #1B1D1F;
+  --ink-soft:   #55585C;
+  --line:       #C9C7BC;
+  --line-soft:  #DAD8CE;
+  --accent:     #1E5F74;   /* blueprint teal — links, active elements, hero line */
+  --accent-2:   #B4432B;   /* dimension rust — used sparingly for callouts */
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body:    'Inter', sans-serif;
+  --font-mono:    'IBM Plex Mono', monospace;
+
+  --gap: clamp(1.25rem, 3vw, 2.5rem);
+  --sheet-margin: clamp(0.75rem, 2.5vw, 2rem);
+}
+
+*{ box-sizing: border-box; }
+
+html{ scroll-behavior: smooth; }
+
+body{
+  margin: 0;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior: auto; }
+  *{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+a{ color: var(--accent); text-decoration: none; }
+a:hover, a:focus-visible{ text-decoration: underline; text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible{ outline: 2px solid var(--accent); outline-offset: 3px; }
+
+h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; color: var(--ink); }
+
+/* ---------------------------------------------------------
+   The sheet: page rendered as a bordered drawing sheet,
+   faint graph-paper grid, corner registration marks.
+--------------------------------------------------------- */
+.sheet{
+  position: relative;
+  max-width: 1180px;
+  margin: var(--sheet-margin) auto;
+  background:
+    linear-gradient(var(--line-soft) 1px, transparent 1px) 0 0 / 100% 32px,
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px) 0 0 / 32px 100%,
+    var(--paper);
+  background-blend-mode: multiply, multiply, normal;
+  opacity: 0.999; /* fixes a rendering seam on some browsers */
+  border: 1px solid var(--ink);
+  padding: 0 var(--sheet-margin);
+}
+
+.reg{
+  position: absolute;
+  width: 16px; height: 16px;
+  stroke: var(--ink);
+  stroke-width: 1.4;
+  fill: none;
+  opacity: 0.55;
+}
+.reg--tl{ top: -8px; left: -8px; }
+.reg--tr{ top: -8px; right: -8px; }
+.reg--bl{ bottom: -8px; left: -8px; }
+.reg--br{ bottom: -8px; right: -8px; }
+
+/* ---------------------------------------------------------
+   Title bar
+--------------------------------------------------------- */
+.titlebar{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--ink);
+}
+.mark{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+}
+.mark:hover{ text-decoration: none; }
+.mark__compass{
+  width: 22px; height: 22px;
+  stroke: var(--ink);
+  stroke-width: 1.6;
+  fill: none;
+}
+.nav{ display: flex; gap: clamp(1rem, 3vw, 2rem); font-size: 0.95rem; }
+.nav a{ color: var(--ink-soft); }
+.nav a:hover{ color: var(--accent); }
+
+/* ---------------------------------------------------------
+   Hero
+--------------------------------------------------------- */
+.hero{
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--gap);
+  align-items: center;
+  padding: clamp(2.5rem, 6vw, 5rem) 0;
+  border-bottom: 1px solid var(--line);
+}
+.hero__field{
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+  margin: 0 0 1rem;
+}
+.hero h1{
+  font-size: clamp(2rem, 4.2vw, 3.1rem);
+  line-height: 1.12;
+  max-width: 14ch;
+}
+.hero__lede{
+  max-width: 46ch;
+  color: var(--ink-soft);
+  margin: 1.25rem 0 1.75rem;
+}
+.cta{
+  display: inline-block;
+  padding: 0.7rem 1.3rem;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+}
+.cta:hover{
+  background: var(--ink);
+  color: var(--paper);
+  text-decoration: none;
+}
+
+.hero__drawing{ display: flex; justify-content: center; }
+.draw{ width: 100%; max-width: 340px; height: auto; }
+.draw__part{
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  animation: draw-in 1.6s ease-out 0.2s forwards;
+}
+.draw__dim{
+  fill: none;
+  stroke: var(--accent-2);
+  stroke-width: 1;
+}
+.draw__label{
+  font-family: var(--font-mono);
+  font-size: 10px;
+  fill: var(--ink-soft);
+}
+.draw__label--accent{ fill: var(--accent-2); }
+
+@keyframes draw-in{
+  to{ stroke-dashoffset: 0; }
+}
+
+/* ---------------------------------------------------------
+   Profil — literal title-block table
+--------------------------------------------------------- */
+.profil{
+  padding: clamp(2rem, 4vw, 3rem) 0;
+  border-bottom: 1px solid var(--line);
+}
+.tb-row{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+  border-top: 1px solid var(--line-soft);
+  padding: 0.6rem 0;
+}
+.tb-row:first-child{ border-top: none; }
+.tb-field{ display: flex; gap: 0.75rem; align-items: baseline; }
+.tb-key{
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  min-width: 8.5em;
+}
+.tb-val{ font-size: 0.98rem; }
+.profil__note{
+  margin: 1.5rem 0 0;
+  max-width: 60ch;
+  color: var(--ink-soft);
+}
+
+/* ---------------------------------------------------------
+   Projekte — sheet rows, not a card grid
+--------------------------------------------------------- */
+.section-head{
+  font-size: 1.1rem;
+  margin: clamp(2rem, 4vw, 3rem) 0 1.5rem;
+}
+
+.sheet-row{
+  display: grid;
+  grid-template-columns: 90px 90px 1.4fr 1fr;
+  gap: var(--gap);
+  align-items: start;
+  padding: 1.75rem 0;
+  border-top: 1px solid var(--line);
+}
+.sheet-row:last-child{ padding-bottom: 2.5rem; }
+
+.sheet-row__num{
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+.sheet-row__art svg{
+  width: 100%; height: auto;
+  fill: none;
+  stroke: var(--ink-soft);
+  stroke-width: 1.3;
+}
+.sheet-row__body h3{
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+}
+.sheet-row__body p{ color: var(--ink-soft); margin: 0; max-width: 52ch; }
+
+.sheet-row__specs{ margin: 0; font-size: 0.85rem; }
+.sheet-row__specs div{
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.25rem 0;
+  border-top: 1px solid var(--line-soft);
+}
+.sheet-row__specs div:first-child{ border-top: none; }
+.sheet-row__specs dt{ color: var(--ink-soft); font-family: var(--font-mono); font-weight: 400; }
+.sheet-row__specs dd{ margin: 0; font-family: var(--font-mono); text-align: right; }
+
+/* ---------------------------------------------------------
+   Tools
+--------------------------------------------------------- */
+.tools{ padding-bottom: clamp(2.5rem, 5vw, 4rem); }
+.tools__grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+}
+.tools__grid h4{ font-size: 0.95rem; margin-bottom: 0.4rem; }
+.tools__grid p{ color: var(--ink-soft); margin: 0; font-size: 0.92rem; }
+
+/* ---------------------------------------------------------
+   Footer title block
+--------------------------------------------------------- */
+.titleblock{
+  border-top: 1px solid var(--ink);
+  padding: 1.5rem 0 1.75rem;
+}
+.titleblock__row{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+}
+.titleblock .tb-key{ min-width: 6em; }
+.titleblock__rev{
+  margin: 1.25rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+}
+
+/* ---------------------------------------------------------
+   Responsive
+--------------------------------------------------------- */
+@media (max-width: 860px){
+  .hero{ grid-template-columns: 1fr; }
+  .hero__drawing{ order: -1; max-width: 260px; margin: 0 auto; }
+  .sheet-row{ grid-template-columns: 1fr; }
+  .sheet-row__id{ display: flex; align-items: center; gap: 0.5rem; }
+  .sheet-row__art{ width: 72px; }
+  .tools__grid{ grid-template-columns: 1fr; gap: 1.5rem; }
+  .titleblock__row{ grid-template-columns: 1fr; gap: 0.75rem; }
+  .tb-row{ grid-template-columns: 1fr; gap: 0.4rem; }
+}
+
+@media (max-width: 560px){
+  .nav{ gap: 1rem; font-size: 0.88rem; }
+}
