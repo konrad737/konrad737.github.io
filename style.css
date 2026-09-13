@@ -1,26 +1,26 @@
 /* ---------------------------------------------------------
    Tokens
-   Grid unit = 8px. Every vertical measurement (line-height,
-   padding, margin, gap) below is a multiple of this unit, so
-   the running text and section boundaries always land on a
-   grid line instead of drifting across it.
+   --unit drives all vertical rhythm (line-height, padding,
+   margin). The board itself uses a sparse dot grid — calmer
+   than ruled lines — and content sits on top as solid,
+   bordered panels, like parts laid out on a pegboard.
 --------------------------------------------------------- */
 :root{
-  --paper:      #EFEEE7;
-  --paper-2:    #E7E5DB;
+  --board:      #E7E5DB;  /* the pegboard surface */
+  --card:       #F5F4EF;  /* solid panels placed on the board */
   --ink:        #1B1D1F;
   --ink-soft:   #55585C;
   --line:       #C9C7BC;
   --line-soft:  #DAD8CE;
-  --accent:     #1E5F74;   /* blueprint teal — links, active elements, hero line */
-  --accent-2:   #B4432B;   /* dimension rust — used sparingly for callouts */
+  --accent:     #1E5F74;  /* blueprint teal — links, active elements, hero line */
+  --accent-2:   #B4432B;  /* dimension rust — used sparingly for callouts */
 
   --font-display: 'Space Grotesk', sans-serif;
   --font-body:    'Inter', sans-serif;
   --font-mono:    'IBM Plex Mono', monospace;
 
   --unit: 8px;
-  --gap: 32px;            /* 4 units */
+  --gap: 32px;            /* 4 units — space between panels */
   --sheet-margin: 32px;   /* 4 units */
 }
 
@@ -30,11 +30,11 @@ html{ scroll-behavior: smooth; }
 
 body{
   margin: 0;
-  background: var(--paper-2);
+  background: var(--board);
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 16px;
-  line-height: 24px; /* exactly 3 units — the page's baseline rhythm */
+  line-height: 24px; /* 3 units — the page's baseline rhythm */
   -webkit-font-smoothing: antialiased;
 }
 
@@ -50,22 +50,19 @@ a:focus-visible, button:focus-visible{ outline: 2px solid var(--accent); outline
 h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; color: var(--ink); }
 
 /* ---------------------------------------------------------
-   The sheet: page rendered as a bordered drawing sheet.
-   The grid pitch (8px) matches the type's baseline rhythm,
-   so every heading and paragraph sits on a grid line.
+   The board: a sparse dot grid, not ruled lines — a quiet
+   texture to place panels on, rather than something the eye
+   has to reconcile with every line of text.
 --------------------------------------------------------- */
 .sheet{
   position: relative;
   max-width: 1180px;
   margin: var(--sheet-margin) auto;
-  background:
-    linear-gradient(var(--line-soft) 1px, transparent 1px) 0 0 / 100% var(--unit),
-    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px) 0 0 / var(--unit) 100%,
-    var(--paper);
-  background-blend-mode: multiply, multiply, normal;
-  opacity: 0.999; /* fixes a rendering seam on some browsers */
+  background-color: var(--board);
+  background-image: radial-gradient(var(--line) 1.2px, transparent 1.2px);
+  background-size: 32px 32px;
   border: 1px solid var(--ink);
-  padding: 0 var(--sheet-margin);
+  padding: 32px var(--sheet-margin);
 }
 
 .reg{
@@ -82,14 +79,24 @@ h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; c
 .reg--br{ bottom: -8px; right: -8px; }
 
 /* ---------------------------------------------------------
-   Title bar — height and padding are whole grid units
+   Shared panel look: every top-level block is a solid card
+   sitting on the board — no borders needed between them
+   beyond the card edge itself, just space.
+--------------------------------------------------------- */
+.titlebar, .hero, .profil, .sheet-row, .tools, .titleblock{
+  background: var(--card);
+  border: 1px solid var(--ink);
+}
+
+/* ---------------------------------------------------------
+   Title bar
 --------------------------------------------------------- */
 .titlebar{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--unit) 0; /* 8px — content is 24px tall, total = 40px = 5 units */
-  border-bottom: 1px solid var(--ink);
+  padding: var(--unit) 24px;
+  margin-bottom: var(--gap);
 }
 .mark{
   display: flex;
@@ -119,40 +126,41 @@ h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; c
   grid-template-columns: 1.1fr 0.9fr;
   gap: var(--gap);
   align-items: center;
-  padding: 96px 0; /* 12 units */
-  border-bottom: 1px solid var(--line);
+  padding: 48px;
+  margin-bottom: var(--gap);
 }
 .hero__field{
   font-family: var(--font-mono);
   font-size: 0.8rem;
-  line-height: 16px; /* 2 units */
+  line-height: 16px;
   color: var(--accent);
   letter-spacing: 0.02em;
   margin: 0 0 var(--unit);
 }
 .hero h1{
-  font-size: 3rem;      /* 48px */
-  line-height: 48px;    /* 6 units — set as one block, not loose leading */
+  font-size: 3rem;
+  line-height: 48px;
   max-width: 13ch;
 }
 .hero__lede{
   max-width: 46ch;
   color: var(--ink-soft);
-  line-height: 24px; /* 3 units, matches body rhythm */
-  margin: 24px 0 32px; /* 3 units, 4 units */
+  line-height: 24px;
+  margin: 24px 0 32px;
 }
 .cta{
   display: inline-block;
-  padding: 16px 24px; /* 2 units, 3 units */
-  line-height: 16px;  /* 2 units */
+  padding: 16px 24px;
+  line-height: 16px;
+  background: var(--ink);
   border: 1px solid var(--ink);
-  color: var(--ink);
+  color: var(--card);
   font-family: var(--font-display);
   font-size: 0.95rem;
 }
 .cta:hover{
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--card);
+  color: var(--ink);
   text-decoration: none;
 }
 
@@ -185,54 +193,59 @@ h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; c
 }
 
 /* ---------------------------------------------------------
-   Profil — literal title-block table
+   Profil — key/value pairs as solid chips, no divider lines
 --------------------------------------------------------- */
 .profil{
-  padding: 64px 0; /* 8 units */
-  border-bottom: 1px solid var(--line);
+  padding: 32px;
+  margin-bottom: var(--gap);
 }
-.tb-row{
+.profil__grid{
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--gap);
-  border-top: 1px solid var(--line-soft);
-  padding: var(--unit) 0; /* 8px */
+  gap: 16px;
+}
+.tb-field{
+  display: flex;
+  align-items: baseline;
+  gap: var(--unit);
+  background: var(--board);
+  border: 1px solid var(--line);
+  padding: 8px 16px;
   line-height: 24px;
 }
-.tb-row:first-child{ border-top: none; }
-.tb-field{ display: flex; gap: var(--unit); align-items: baseline; }
 .tb-key{
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--ink-soft);
-  min-width: 8.5em;
+  min-width: 8em;
 }
-.tb-val{ font-size: 0.98rem; }
+.tb-val{ font-size: 0.95rem; }
 .profil__note{
-  margin: 24px 0 0; /* 3 units */
+  margin: 24px 0 0;
   max-width: 60ch;
   color: var(--ink-soft);
   line-height: 24px;
 }
 
 /* ---------------------------------------------------------
-   Projekte — sheet rows, not a card grid
+   Projekte — each project is its own solid panel
 --------------------------------------------------------- */
 .section-head{
   font-size: 1.1rem;
   line-height: 24px;
-  margin: 48px 0 24px; /* 6 units, 3 units */
+  margin: 0 0 24px;
 }
+
+.projekte{ margin-bottom: var(--gap); }
 
 .sheet-row{
   display: grid;
-  grid-template-columns: 90px 90px 1.4fr 1fr;
+  grid-template-columns: 80px 90px 1.4fr 1fr;
   gap: var(--gap);
   align-items: start;
-  padding: 24px 0; /* 3 units */
-  border-top: 1px solid var(--line);
+  padding: 24px;
 }
-.sheet-row:last-child{ padding-bottom: 40px; } /* 5 units */
+.sheet-row + .sheet-row{ margin-top: 24px; }
 
 .sheet-row__num{
   font-family: var(--font-mono);
@@ -253,23 +266,30 @@ h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; c
 }
 .sheet-row__body p{ color: var(--ink-soft); line-height: 24px; margin: 0; max-width: 52ch; }
 
-.sheet-row__specs{ margin: 0; font-size: 0.85rem; }
+.sheet-row__specs{
+  margin: 0;
+  font-size: 0.85rem;
+  background: var(--board);
+  border: 1px solid var(--line);
+  padding: 8px 16px;
+}
 .sheet-row__specs div{
   display: flex;
   justify-content: space-between;
   gap: var(--unit);
   padding: var(--unit) 0;
-  line-height: 16px; /* 2 units */
-  border-top: 1px solid var(--line-soft);
+  line-height: 16px;
 }
-.sheet-row__specs div:first-child{ border-top: none; }
 .sheet-row__specs dt{ color: var(--ink-soft); font-family: var(--font-mono); font-weight: 400; }
 .sheet-row__specs dd{ margin: 0; font-family: var(--font-mono); text-align: right; }
 
 /* ---------------------------------------------------------
    Tools
 --------------------------------------------------------- */
-.tools{ padding-bottom: 64px; } /* 8 units */
+.tools{
+  padding: 32px;
+  margin-bottom: var(--gap);
+}
 .tools__grid{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -281,45 +301,40 @@ h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; c
 /* ---------------------------------------------------------
    Footer title block
 --------------------------------------------------------- */
-.titleblock{
-  border-top: 1px solid var(--ink);
-  padding: 24px 0 32px; /* 3 units, 4 units */
-}
+.titleblock{ padding: 24px; }
 .titleblock__row{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--gap);
-  line-height: 24px;
+  gap: 16px;
 }
 .titleblock .tb-key{ min-width: 6em; }
 .titleblock__rev{
-  margin: 24px 0 0; /* 3 units */
+  margin: 24px 0 0;
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  line-height: 16px; /* 2 units */
+  line-height: 16px;
   color: var(--ink-soft);
 }
 
 /* ---------------------------------------------------------
-   Responsive — each step's sizes and spacing stay whole
-   multiples of the 8px unit, just smaller multiples.
+   Responsive
 --------------------------------------------------------- */
 @media (max-width: 860px){
-  .hero{ grid-template-columns: 1fr; padding: 64px 0; } /* 8 units */
-  .hero h1{ font-size: 2.25rem; line-height: 40px; }     /* 36px / 5 units */
+  .hero{ grid-template-columns: 1fr; padding: 32px; }
+  .hero h1{ font-size: 2.25rem; line-height: 40px; }
   .hero__drawing{ order: -1; max-width: 260px; margin: 0 auto; }
-  .sheet-row{ grid-template-columns: 1fr; }
+  .sheet-row{ grid-template-columns: 1fr; padding: 24px; }
   .sheet-row__id{ display: flex; align-items: center; gap: var(--unit); }
   .sheet-row__art{ width: 72px; }
+  .profil__grid{ grid-template-columns: 1fr; }
   .tools__grid{ grid-template-columns: 1fr; gap: 24px; }
   .titleblock__row{ grid-template-columns: 1fr; gap: var(--unit); }
-  .tb-row{ grid-template-columns: 1fr; gap: var(--unit); }
-  :root{ --gap: 24px; --sheet-margin: 24px; }
+  :root{ --gap: 24px; --sheet-margin: 16px; }
 }
 
 @media (max-width: 560px){
-  .hero{ padding: 48px 0; } /* 6 units */
-  .hero h1{ font-size: 1.875rem; line-height: 32px; } /* 30px / 4 units */
+  .hero{ padding: 24px; }
+  .hero h1{ font-size: 1.875rem; line-height: 32px; }
+  .titlebar{ padding: var(--unit) 16px; }
   .nav{ gap: var(--unit); font-size: 0.88rem; }
-  :root{ --sheet-margin: 16px; }
 }
