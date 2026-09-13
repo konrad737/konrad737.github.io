@@ -1,5 +1,9 @@
 /* ---------------------------------------------------------
    Tokens
+   Grid unit = 8px. Every vertical measurement (line-height,
+   padding, margin, gap) below is a multiple of this unit, so
+   the running text and section boundaries always land on a
+   grid line instead of drifting across it.
 --------------------------------------------------------- */
 :root{
   --paper:      #EFEEE7;
@@ -15,8 +19,9 @@
   --font-body:    'Inter', sans-serif;
   --font-mono:    'IBM Plex Mono', monospace;
 
-  --gap: clamp(1.25rem, 3vw, 2.5rem);
-  --sheet-margin: clamp(0.75rem, 2.5vw, 2rem);
+  --unit: 8px;
+  --gap: 32px;            /* 4 units */
+  --sheet-margin: 32px;   /* 4 units */
 }
 
 *{ box-sizing: border-box; }
@@ -29,7 +34,7 @@ body{
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 16px;
-  line-height: 1.55;
+  line-height: 24px; /* exactly 3 units — the page's baseline rhythm */
   -webkit-font-smoothing: antialiased;
 }
 
@@ -45,16 +50,17 @@ a:focus-visible, button:focus-visible{ outline: 2px solid var(--accent); outline
 h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; color: var(--ink); }
 
 /* ---------------------------------------------------------
-   The sheet: page rendered as a bordered drawing sheet,
-   faint graph-paper grid, corner registration marks.
+   The sheet: page rendered as a bordered drawing sheet.
+   The grid pitch (8px) matches the type's baseline rhythm,
+   so every heading and paragraph sits on a grid line.
 --------------------------------------------------------- */
 .sheet{
   position: relative;
   max-width: 1180px;
   margin: var(--sheet-margin) auto;
   background:
-    linear-gradient(var(--line-soft) 1px, transparent 1px) 0 0 / 100% 32px,
-    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px) 0 0 / 32px 100%,
+    linear-gradient(var(--line-soft) 1px, transparent 1px) 0 0 / 100% var(--unit),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px) 0 0 / var(--unit) 100%,
     var(--paper);
   background-blend-mode: multiply, multiply, normal;
   opacity: 0.999; /* fixes a rendering seam on some browsers */
@@ -76,22 +82,23 @@ h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; c
 .reg--br{ bottom: -8px; right: -8px; }
 
 /* ---------------------------------------------------------
-   Title bar
+   Title bar — height and padding are whole grid units
 --------------------------------------------------------- */
 .titlebar{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 0;
+  padding: var(--unit) 0; /* 8px — content is 24px tall, total = 40px = 5 units */
   border-bottom: 1px solid var(--ink);
 }
 .mark{
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--unit);
   color: var(--ink);
   font-family: var(--font-display);
   font-size: 1.05rem;
+  line-height: 24px;
 }
 .mark:hover{ text-decoration: none; }
 .mark__compass{
@@ -100,7 +107,7 @@ h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; c
   stroke-width: 1.6;
   fill: none;
 }
-.nav{ display: flex; gap: clamp(1rem, 3vw, 2rem); font-size: 0.95rem; }
+.nav{ display: flex; gap: 24px; font-size: 0.95rem; line-height: 24px; }
 .nav a{ color: var(--ink-soft); }
 .nav a:hover{ color: var(--accent); }
 
@@ -112,29 +119,32 @@ h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; c
   grid-template-columns: 1.1fr 0.9fr;
   gap: var(--gap);
   align-items: center;
-  padding: clamp(2.5rem, 6vw, 5rem) 0;
+  padding: 96px 0; /* 12 units */
   border-bottom: 1px solid var(--line);
 }
 .hero__field{
   font-family: var(--font-mono);
   font-size: 0.8rem;
+  line-height: 16px; /* 2 units */
   color: var(--accent);
   letter-spacing: 0.02em;
-  margin: 0 0 1rem;
+  margin: 0 0 var(--unit);
 }
 .hero h1{
-  font-size: clamp(2rem, 4.2vw, 3.1rem);
-  line-height: 1.12;
-  max-width: 14ch;
+  font-size: 3rem;      /* 48px */
+  line-height: 48px;    /* 6 units — set as one block, not loose leading */
+  max-width: 13ch;
 }
 .hero__lede{
   max-width: 46ch;
   color: var(--ink-soft);
-  margin: 1.25rem 0 1.75rem;
+  line-height: 24px; /* 3 units, matches body rhythm */
+  margin: 24px 0 32px; /* 3 units, 4 units */
 }
 .cta{
   display: inline-block;
-  padding: 0.7rem 1.3rem;
+  padding: 16px 24px; /* 2 units, 3 units */
+  line-height: 16px;  /* 2 units */
   border: 1px solid var(--ink);
   color: var(--ink);
   font-family: var(--font-display);
@@ -178,7 +188,7 @@ h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; c
    Profil — literal title-block table
 --------------------------------------------------------- */
 .profil{
-  padding: clamp(2rem, 4vw, 3rem) 0;
+  padding: 64px 0; /* 8 units */
   border-bottom: 1px solid var(--line);
 }
 .tb-row{
@@ -186,10 +196,11 @@ h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; c
   grid-template-columns: 1fr 1fr;
   gap: var(--gap);
   border-top: 1px solid var(--line-soft);
-  padding: 0.6rem 0;
+  padding: var(--unit) 0; /* 8px */
+  line-height: 24px;
 }
 .tb-row:first-child{ border-top: none; }
-.tb-field{ display: flex; gap: 0.75rem; align-items: baseline; }
+.tb-field{ display: flex; gap: var(--unit); align-items: baseline; }
 .tb-key{
   font-family: var(--font-mono);
   font-size: 0.72rem;
@@ -198,9 +209,10 @@ h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; c
 }
 .tb-val{ font-size: 0.98rem; }
 .profil__note{
-  margin: 1.5rem 0 0;
+  margin: 24px 0 0; /* 3 units */
   max-width: 60ch;
   color: var(--ink-soft);
+  line-height: 24px;
 }
 
 /* ---------------------------------------------------------
@@ -208,7 +220,8 @@ h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; c
 --------------------------------------------------------- */
 .section-head{
   font-size: 1.1rem;
-  margin: clamp(2rem, 4vw, 3rem) 0 1.5rem;
+  line-height: 24px;
+  margin: 48px 0 24px; /* 6 units, 3 units */
 }
 
 .sheet-row{
@@ -216,14 +229,15 @@ h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; c
   grid-template-columns: 90px 90px 1.4fr 1fr;
   gap: var(--gap);
   align-items: start;
-  padding: 1.75rem 0;
+  padding: 24px 0; /* 3 units */
   border-top: 1px solid var(--line);
 }
-.sheet-row:last-child{ padding-bottom: 2.5rem; }
+.sheet-row:last-child{ padding-bottom: 40px; } /* 5 units */
 
 .sheet-row__num{
   font-family: var(--font-mono);
   font-size: 0.75rem;
+  line-height: 24px;
   color: var(--ink-soft);
 }
 .sheet-row__art svg{
@@ -234,16 +248,18 @@ h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; c
 }
 .sheet-row__body h3{
   font-size: 1.15rem;
-  margin-bottom: 0.5rem;
+  line-height: 24px;
+  margin-bottom: var(--unit);
 }
-.sheet-row__body p{ color: var(--ink-soft); margin: 0; max-width: 52ch; }
+.sheet-row__body p{ color: var(--ink-soft); line-height: 24px; margin: 0; max-width: 52ch; }
 
 .sheet-row__specs{ margin: 0; font-size: 0.85rem; }
 .sheet-row__specs div{
   display: flex;
   justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.25rem 0;
+  gap: var(--unit);
+  padding: var(--unit) 0;
+  line-height: 16px; /* 2 units */
   border-top: 1px solid var(--line-soft);
 }
 .sheet-row__specs div:first-child{ border-top: none; }
@@ -253,49 +269,57 @@ h1, h2, h3, h4{ font-family: var(--font-display); font-weight: 500; margin: 0; c
 /* ---------------------------------------------------------
    Tools
 --------------------------------------------------------- */
-.tools{ padding-bottom: clamp(2.5rem, 5vw, 4rem); }
+.tools{ padding-bottom: 64px; } /* 8 units */
 .tools__grid{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--gap);
 }
-.tools__grid h4{ font-size: 0.95rem; margin-bottom: 0.4rem; }
-.tools__grid p{ color: var(--ink-soft); margin: 0; font-size: 0.92rem; }
+.tools__grid h4{ font-size: 0.95rem; line-height: 24px; margin-bottom: var(--unit); }
+.tools__grid p{ color: var(--ink-soft); margin: 0; font-size: 0.92rem; line-height: 24px; }
 
 /* ---------------------------------------------------------
    Footer title block
 --------------------------------------------------------- */
 .titleblock{
   border-top: 1px solid var(--ink);
-  padding: 1.5rem 0 1.75rem;
+  padding: 24px 0 32px; /* 3 units, 4 units */
 }
 .titleblock__row{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--gap);
+  line-height: 24px;
 }
 .titleblock .tb-key{ min-width: 6em; }
 .titleblock__rev{
-  margin: 1.25rem 0 0;
+  margin: 24px 0 0; /* 3 units */
   font-family: var(--font-mono);
   font-size: 0.72rem;
+  line-height: 16px; /* 2 units */
   color: var(--ink-soft);
 }
 
 /* ---------------------------------------------------------
-   Responsive
+   Responsive — each step's sizes and spacing stay whole
+   multiples of the 8px unit, just smaller multiples.
 --------------------------------------------------------- */
 @media (max-width: 860px){
-  .hero{ grid-template-columns: 1fr; }
+  .hero{ grid-template-columns: 1fr; padding: 64px 0; } /* 8 units */
+  .hero h1{ font-size: 2.25rem; line-height: 40px; }     /* 36px / 5 units */
   .hero__drawing{ order: -1; max-width: 260px; margin: 0 auto; }
   .sheet-row{ grid-template-columns: 1fr; }
-  .sheet-row__id{ display: flex; align-items: center; gap: 0.5rem; }
+  .sheet-row__id{ display: flex; align-items: center; gap: var(--unit); }
   .sheet-row__art{ width: 72px; }
-  .tools__grid{ grid-template-columns: 1fr; gap: 1.5rem; }
-  .titleblock__row{ grid-template-columns: 1fr; gap: 0.75rem; }
-  .tb-row{ grid-template-columns: 1fr; gap: 0.4rem; }
+  .tools__grid{ grid-template-columns: 1fr; gap: 24px; }
+  .titleblock__row{ grid-template-columns: 1fr; gap: var(--unit); }
+  .tb-row{ grid-template-columns: 1fr; gap: var(--unit); }
+  :root{ --gap: 24px; --sheet-margin: 24px; }
 }
 
 @media (max-width: 560px){
-  .nav{ gap: 1rem; font-size: 0.88rem; }
+  .hero{ padding: 48px 0; } /* 6 units */
+  .hero h1{ font-size: 1.875rem; line-height: 32px; } /* 30px / 4 units */
+  .nav{ gap: var(--unit); font-size: 0.88rem; }
+  :root{ --sheet-margin: 16px; }
 }
